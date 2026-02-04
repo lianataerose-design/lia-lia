@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Valentine 💘</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #ffe6f0;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 40px;
+      color: #cc0066;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .buttons {
+      position: relative;
+      z-index: 2;
+    }
+
+    button {
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 10px;
+    }
+
+    #yes {
+      background-color: #ff4d88;
+      color: white;
+    }
+
+    #no {
+      background-color: #999;
+      color: white;
+      position: absolute;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="fireworks"></canvas>
+
+  <h1 id="question">Will you be my Valentine? 💖</h1>
+
+  <div class="buttons" id="buttons">
+    <button id="yes" onclick="yesClicked()">Yes 💘</button>
+    <button id="no" onmouseover="moveNo()">No 💔</button>
+  </div>
+
+  <script>
+    let moves = 0;
+
+    function moveNo() {
+      const noBtn = document.getElementById("no");
+      const x = Math.random() * (window.innerWidth - 100);
+      const y = Math.random() * (window.innerHeight - 100);
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+
+      moves++;
+      if (moves > 7) {
+        noBtn.style.display = "none";
+      }
+    }
+
+    function yesClicked() {
+      document.getElementById("question").innerHTML =
+        "Love, <strong>Lia 💕</strong>";
+      document.getElementById("buttons").style.display = "none";
+      startFireworks();
+    }
+
+    // Fireworks
+    const canvas = document.getElementById("fireworks");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let particles = [];
+
+    function createFirework() {
+      const x = Math.random() * canvas.width;
+      const y = Math.random() * canvas.height / 2;
+      const colors = ["#ff4d88", "#ffcc00", "#ffffff", "#ff66cc"];
+
+      for (let i = 0; i < 60; i++) {
+        particles.push({
+          x,
+          y,
+          radius: Math.random() * 2 + 1,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 6,
+          vy: (Math.random() - 0.5) * 6,
+          life: 100
+        });
+      }
+    }
+
+    function animateFireworks() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach((p, i) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life--;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+
+        if (p.life <= 0) particles.splice(i, 1);
+      });
+
+      requestAnimationFrame(animateFireworks);
+    }
+
+    function startFireworks() {
+      setInterval(createFirework, 500);
+      animateFireworks();
+    }
+  </script>
+
+</body>
+</html>
